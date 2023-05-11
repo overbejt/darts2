@@ -124,6 +124,13 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             PAUSED = !PAUSED;
+            if (clip != null) {
+                if (PAUSED) {
+                    clip.stop();
+                } else {
+                    clip.start();
+                }
+            }
         } else {
             player.keyPressed(e);
         }
