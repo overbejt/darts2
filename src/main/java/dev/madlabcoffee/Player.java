@@ -15,6 +15,7 @@ public class Player {
     private final Point position;
     // keep track of the player's score
     private int score;
+    private int lives;
     // px
     private final int WIDTH = 125;
     // px
@@ -27,6 +28,7 @@ public class Player {
         // initialize the state
         position = new Point(10, 10);
         score = 0;
+        lives = 10;
     }  // End of the 'Constructor'
 
     private void loadImage() {
@@ -93,6 +95,14 @@ public class Player {
     public Point getPosition() {
         return position;
     }  // End of the 'getPosition' method
+
+    public int getLives() {
+        return lives;
+    }  // End of the 'getLives' method
+
+    public void decrementLives() {
+        lives--;
+    }  // End of the 'decrementLives' method
 }  // End of the 'Player' class
 
 // END OF FILE

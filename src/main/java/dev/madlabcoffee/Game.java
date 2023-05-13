@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
-import java.net.URL;
 
 public class Game extends JPanel implements ActionListener, KeyListener {
     // Controls the delay between each tick in ms
@@ -24,6 +23,9 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     private Timer timer;
     private Player player;
     private Coconut coconut;
+    private TextService textService;
+    private final int SECONDS = 3;
+    private int countdownCount = SECONDS * 1000;
 
     public Game() {
         // set the frame size
@@ -55,6 +57,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         // initialize the game state
         player = new Player();
         coconut = new Coconut();
+        textService = new TextService();
 
         // this timer will call the actionPerformed() method every DELAY ms
         timer = new Timer(DELAY, this);
@@ -68,18 +71,19 @@ public class Game extends JPanel implements ActionListener, KeyListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (!isPlayerHit() && !PAUSED) {
-            // prevent the player from disappearing off the board
-            player.tick();
 
-            coconut.tick();
-
-            // calling repaint() will trigger paintComponent() to run again,
-            // which will refresh/redraw the graphics.
-            repaint();
-        } else {
-            PAUSED = true;
+        if (!isInCountdown()) {
+            if (!isPlayerHit() && !PAUSED) {
+                // prevent the player from disappearing off the board
+                player.tick();
+                coconut.tick();
+            } else {
+                PAUSED = true;
+            }
         }
+        // calling repaint() will trigger paintComponent() to run again,
+        // which will refresh/redraw the graphics.
+        repaint();
     }  // End of the 'actionPerformed' method
 
     /**
@@ -95,25 +99,39 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
         if (backgroundImg != null) {
             g.drawImage(
-              backgroundImg,
-              0,
-              0,
+                    backgroundImg,
+                    0,
+                    0,
                     getWidth(),
                     getHeight(),
                     null
             );
         } else {
-            // draw the graphics
-            drawBackground(g);
+            System.exit(-1);
         }
 
-//        drawScore(g);
+        textService.drawScore(g, player.getScore());
+        textService.drawLives(g, player.getLives());
+
         player.draw(g, this);
+        // Draw after the player so that it renders on top
         coconut.draw(g, this);
+
+        if (PAUSED) {
+            textService.drawPaused(g);
+        }
+        if (isInCountdown()) {
+            textService.drawCountdown(g, (countdownCount / 1000) + 1);
+            countdownCount -= DELAY;
+        }
 
         // this smooths out the animations on some systems
         Toolkit.getDefaultToolkit().sync();
     }  // End of the 'paintComponent' method
+
+    boolean isInCountdown() {
+        return countdownCount > 0;
+    }  // End of the 'isInCountdown' method
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -122,17 +140,19 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            PAUSED = !PAUSED;
-            if (clip != null) {
-                if (PAUSED) {
-                    clip.stop();
-                } else {
-                    clip.start();
+        if (!isInCountdown()) {
+            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                PAUSED = !PAUSED;
+                if (clip != null) {
+                    if (PAUSED) {
+                        clip.stop();
+                    } else {
+                        clip.start();
+                    }
                 }
+            } else {
+                player.keyPressed(e);
             }
-        } else {
-            player.keyPressed(e);
         }
     }  // End of the 'keyPressed' method
 
@@ -140,24 +160,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     public void keyReleased(KeyEvent e) {
         // noop
     }  // End of the 'keyReleased' method
-
-    private void drawBackground(Graphics g) {
-        // draw a checkered background
-        g.setColor(new Color(214, 214, 214));
-        for (int row = 0; row < ROWS; row++) {
-            for (int col = 0; col < COLUMNS; col++) {
-                // only every other tile
-                if ((row + col) % 2 == 1) {
-                    g.fillRect(
-                            col * TILE_SIZE,
-                            row * TILE_SIZE,
-                            TILE_SIZE,
-                            TILE_SIZE
-                    );
-                }
-            }
-        }
-    }  // End of the 'drawBackground' method
 
     private boolean isPlayerHit() {
         return false;
