@@ -16,6 +16,7 @@ public class Player extends Drawable {
 
         score = 0;
         lives = 10;
+//        lives = 1;
     }  // End of the 'Constructor'
 
     @Override

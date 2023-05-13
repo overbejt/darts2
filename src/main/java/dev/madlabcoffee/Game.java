@@ -73,7 +73,9 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e) {
 
         if (!isInCountdown()) {
-            if (!isPlayerHit() && !PAUSED) {
+            if (player.getLives() < 1) {
+                audioService.pauseMusic();
+            } else if (!isPlayerHit() && !PAUSED) {
                 // prevent the player from disappearing off the board
                 player.tick();
                 coconut.tick();
@@ -130,6 +132,9 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         if (isInCountdown()) {
             textService.drawCountdown(g, (countdownCount / 1000) + 1);
             countdownCount -= DELAY;
+        }
+        if (player.getLives() < 1) {
+            textService.drawGameOver(g);
         }
 
         // this smooths out the animations on some systems
