@@ -10,13 +10,9 @@ import java.io.IOException;
 public abstract class Drawable {
     protected final BufferedImage image;
     protected final Point position;
-    protected final int WIDTH;
-    protected final int HEIGHT;
 
-    Drawable(Point position, int width, int height, String path) {
+    Drawable(Point position, String path) {
         this.position = position;
-        this.WIDTH = width;
-        this.HEIGHT = height;
         this.image = loadImage(path);
     }  // End of the 'Constructor'
 
@@ -38,6 +34,14 @@ public abstract class Drawable {
     public Point getPosition() {
         return position;
     }  // End of the 'getPosition' method
+
+    public int getWidth() {
+        return image.getWidth();
+    }  // End of the 'getWidth' method
+
+    public int getHeight() {
+        return image.getHeight();
+    }  // End of the 'getHeight' method
 
     /**
      * with the <code>Point</code> class, remember that

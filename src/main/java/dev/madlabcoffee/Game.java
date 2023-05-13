@@ -1,11 +1,12 @@
 package dev.madlabcoffee;
 
 import dev.madlabcoffee.drawables.Coconut;
+import dev.madlabcoffee.drawables.Drawable;
 import dev.madlabcoffee.drawables.Player;
+import dev.madlabcoffee.services.AudioService;
 import dev.madlabcoffee.services.TextService;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -21,10 +22,9 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     public static final int ROWS = 12;
     public static final int COLUMNS = 18;
     private Image backgroundImg;
-
-    private Clip clip;
     private final Player player;
     private final Coconut coconut;
+    private final AudioService audioService;
     private final TextService textService;
     private static boolean PAUSED = false;
     private final int SECONDS = 3;
@@ -35,21 +35,17 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         setPreferredSize(new Dimension(TILE_SIZE * COLUMNS, TILE_SIZE * ROWS));
 
         initBackground();
-        initAudio();
 
         // initialize the game state
         player = new Player(
                 new Point(10, 10),
-                125,
-                125,
                 "assets/images/Killer-koala.png"
         );
         coconut = new Coconut(
                 new Point(0, 0),
-                82,
-                82,
                 "assets/images/coconut.png"
         );
+        audioService = new AudioService();
         textService = new TextService();
 
         // this timer will call the actionPerformed() method every DELAY ms
@@ -67,23 +63,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         }
     }  // End of the 'initBackground' method
 
-    private void initAudio() {
-        try {
-            AudioInputStream audioIn = AudioSystem
-                    .getAudioInputStream(new File("assets/audio/SwayThisWay.wav").getAbsoluteFile());
-            clip = AudioSystem.getClip();
-            clip.open(audioIn);
-            clip.start();
-            clip.loop(Clip.LOOP_CONTINUOUSLY);
-        } catch (IOException exc) {
-            System.out.println("Failed to load the audio: " + exc.getMessage());
-        } catch (UnsupportedAudioFileException exc) {
-            System.out.println("Unsupported audio type: " + exc.getMessage());
-        } catch (LineUnavailableException exc) {
-            System.out.println("Audio unavailable: " + exc.getMessage());
-        }
-    }  // End of the 'initAudio' method
-
     /**
      * This method is called by the timer every DELAY ms.
      * use this space to update the state of the game or animation
@@ -97,6 +76,11 @@ public class Game extends JPanel implements ActionListener, KeyListener {
                 // prevent the player from disappearing off the board
                 player.tick();
                 coconut.tick();
+
+                if (hasCollision(player, coconut)) {
+                    player.decrementLives();
+                    audioService.playSound();
+                }
             } else {
                 PAUSED = true;
             }
@@ -166,11 +150,11 @@ public class Game extends JPanel implements ActionListener, KeyListener {
                 System.exit(0);
             } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                 PAUSED = !PAUSED;
-                if (clip != null) {
+                if (audioService.hasMusic()) {
                     if (PAUSED) {
-                        clip.stop();
+                        audioService.pauseMusic();
                     } else {
-                        clip.start();
+                        audioService.resumeMusic();
                     }
                 }
             } else {
@@ -191,6 +175,23 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     public static boolean isPaused() {
         return PAUSED;
     }  // End of the 'isPaused' method
+
+    private boolean hasCollision(Drawable player, Drawable drawable) {
+        boolean collision = false;
+
+        double playerX = player.getPosition().getX();
+        double playerY = player.getPosition().getY();
+        double drawableX = drawable.getPosition().getX();
+        double drawableY = drawable.getPosition().getY();
+
+        if (playerX == drawableX || (playerX + 1 == drawableX)) {
+            if (drawableY >= playerY) {
+                collision = true;
+            }
+        }
+
+        return collision;
+    }  // End of the 'hasCollision' method
 }  // End of the 'Frame' class
 
 // END OF FILE

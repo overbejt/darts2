@@ -11,8 +11,8 @@ public class Player extends Drawable {
     private int score;
     private int lives;
 
-    public Player(Point position, int width, int height, String path) {
-        super(position, width, height, path);
+    public Player(Point position, String path) {
+        super(position, path);
 
         score = 0;
         lives = 10;

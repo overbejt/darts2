@@ -4,7 +4,7 @@ import javax.swing.*;
 
 public class Main {
     private static void initWindow() {
-        JFrame window = new JFrame("Just Do it!");
+        JFrame window = new JFrame("Just do it!");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Game game = new Game();

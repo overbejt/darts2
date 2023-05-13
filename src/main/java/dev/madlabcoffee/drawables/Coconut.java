@@ -9,8 +9,8 @@ import java.util.Random;
 public class Coconut extends Drawable {
     private final Random random;
 
-    public Coconut(Point position, int width, int height, String path) {
-        super(position, width, height, path);
+    public Coconut(Point position, String path) {
+        super(position, path);
 
         random = new Random();
     }  // End of the 'Constructor'
