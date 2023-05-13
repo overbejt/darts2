@@ -18,8 +18,6 @@ public class Main {
     }  // End of the 'initWindow' method
 
     public static void main(String[] args) {
-        System.out.println("Hello world!");
-
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

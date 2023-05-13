@@ -141,7 +141,10 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (!isInCountdown()) {
-            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                System.out.println("I'll be back");
+                System.exit(0);
+            } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                 PAUSED = !PAUSED;
                 if (clip != null) {
                     if (PAUSED) {
