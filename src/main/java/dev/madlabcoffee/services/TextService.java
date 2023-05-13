@@ -1,5 +1,6 @@
-package dev.madlabcoffee;
+package dev.madlabcoffee.services;
 
+import dev.madlabcoffee.Game;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -14,7 +15,7 @@ public class TextService {
     Font boldFont;
     Font regFont;
     Font largeFont;
-    TextService() {
+    public TextService() {
         loadFonts();
     }  // End of the 'Constructor'
 

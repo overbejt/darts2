@@ -29,7 +29,7 @@ public class Player extends Drawable {
     }  // End of the 'draw' method
 
     public void keyPressed(KeyEvent e) {
-        if (!Game.PAUSED) {
+        if (!Game.isPaused()) {
             int key = e.getKeyCode();
             switch (key) {
                 case KeyEvent.VK_RIGHT -> position.translate(1, 0);

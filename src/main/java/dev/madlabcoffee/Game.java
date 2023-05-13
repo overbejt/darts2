@@ -2,6 +2,7 @@ package dev.madlabcoffee;
 
 import dev.madlabcoffee.drawables.Coconut;
 import dev.madlabcoffee.drawables.Player;
+import dev.madlabcoffee.services.TextService;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
@@ -19,14 +20,13 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     public static final int TILE_SIZE = 63;
     public static final int ROWS = 12;
     public static final int COLUMNS = 18;
-    public static boolean PAUSED = false;
     private Image backgroundImg;
 
     private Clip clip;
-    private Timer timer;
-    private Player player;
-    private Coconut coconut;
-    private TextService textService;
+    private final Player player;
+    private final Coconut coconut;
+    private final TextService textService;
+    private static boolean PAUSED = false;
     private final int SECONDS = 3;
     private int countdownCount = SECONDS * 1000;
 
@@ -53,7 +53,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         textService = new TextService();
 
         // this timer will call the actionPerformed() method every DELAY ms
-        timer = new Timer(DELAY, this);
+        Timer timer = new Timer(DELAY, this);
         timer.start();
     }  // End of the 'constructor'
 
@@ -187,6 +187,10 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     private boolean isPlayerHit() {
         return false;
     }  // End of the 'isPlayerHit' method
+
+    public static boolean isPaused() {
+        return PAUSED;
+    }  // End of the 'isPaused' method
 }  // End of the 'Frame' class
 
 // END OF FILE
