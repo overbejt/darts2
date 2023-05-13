@@ -1,5 +1,8 @@
 package dev.madlabcoffee;
 
+import dev.madlabcoffee.drawables.Coconut;
+import dev.madlabcoffee.drawables.Player;
+
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import javax.swing.*;
@@ -31,6 +34,30 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         // set the frame size
         setPreferredSize(new Dimension(TILE_SIZE * COLUMNS, TILE_SIZE * ROWS));
 
+        initBackground();
+        initAudio();
+
+        // initialize the game state
+        player = new Player(
+                new Point(10, 10),
+                125,
+                125,
+                "assets/images/Killer-koala.png"
+        );
+        coconut = new Coconut(
+                new Point(0, 0),
+                82,
+                82,
+                "assets/images/coconut.png"
+        );
+        textService = new TextService();
+
+        // this timer will call the actionPerformed() method every DELAY ms
+        timer = new Timer(DELAY, this);
+        timer.start();
+    }  // End of the 'constructor'
+
+    private void initBackground() {
         try {
             backgroundImg = ImageIO.read(new File("assets/images/jungle-palm-trees.png"));
         } catch (IOException exc) {
@@ -38,7 +65,9 @@ public class Game extends JPanel implements ActionListener, KeyListener {
             // set the game frame background
             setBackground(new Color(232, 232, 232));
         }
+    }  // End of the 'initBackground' method
 
+    private void initAudio() {
         try {
             AudioInputStream audioIn = AudioSystem
                     .getAudioInputStream(new File("assets/audio/SwayThisWay.wav").getAbsoluteFile());
@@ -53,16 +82,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         } catch (LineUnavailableException exc) {
             System.out.println("Audio unavailable: " + exc.getMessage());
         }
-
-        // initialize the game state
-        player = new Player();
-        coconut = new Coconut();
-        textService = new TextService();
-
-        // this timer will call the actionPerformed() method every DELAY ms
-        timer = new Timer(DELAY, this);
-        timer.start();
-    }  // End of the 'constructor'
+    }  // End of the 'initAudio' method
 
     /**
      * This method is called by the timer every DELAY ms.
