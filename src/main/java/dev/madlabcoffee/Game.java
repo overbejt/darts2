@@ -5,6 +5,7 @@ import dev.madlabcoffee.drawables.Drawable;
 import dev.madlabcoffee.drawables.Player;
 import dev.madlabcoffee.services.AudioService;
 import dev.madlabcoffee.services.TextService;
+import org.jetbrains.annotations.NotNull;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -80,6 +81,8 @@ public class Game extends JPanel implements ActionListener, KeyListener {
                 if (hasCollision(player, coconut)) {
                     player.decrementLives();
                     audioService.playSound();
+                } else if (earnedPoint(coconut)) {
+                    player.addScore(1);
                 }
             } else {
                 PAUSED = true;
@@ -176,7 +179,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         return PAUSED;
     }  // End of the 'isPaused' method
 
-    private boolean hasCollision(Drawable player, Drawable drawable) {
+    private boolean hasCollision(@NotNull Drawable player, @NotNull Drawable drawable) {
         boolean collision = false;
 
         double playerX = player.getPosition().getX();
@@ -192,6 +195,10 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
         return collision;
     }  // End of the 'hasCollision' method
+
+    private boolean earnedPoint(Drawable coconut) {
+        return coconut.getPosition().getY() == 0;
+    }  // End of the 'earnedPoint' method
 }  // End of the 'Frame' class
 
 // END OF FILE

@@ -97,6 +97,22 @@ public class TextService {
         g2d.drawString(text, x, y);
     }  // End of the 'drawPaused' method
 
+    public void drawGameOver(Graphics g) {
+        String text = "GAME OVER";
+
+        Graphics2D g2d = (Graphics2D) g;
+        setRenderingHints(g2d);
+
+        g2d.setColor(BLACK);
+        g2d.setFont(largeFont);
+        FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
+
+        int x = ((Game.TILE_SIZE * Game.COLUMNS) / 2) - (metrics.stringWidth(text) / 2);
+        int y = (Game.TILE_SIZE * Game.ROWS) / 2;
+
+        g2d.drawString(text, x, y);
+    }  // End of the 'drawGameOver' method
+
     public void drawCountdown(Graphics g, int count) {
         String text = count + "...";
 
