@@ -5,13 +5,12 @@ import java.io.File;
 import java.io.IOException;
 
 public class AudioService {
+    private String MUSIC = "assets/audio/SwayThisWay.wav";
+    private String SOUND = "assets/audio/collision.wav";
     private Clip music;
     private Clip sound;
     public AudioService() {
-        music = initAudio("assets/audio/SwayThisWay.wav");
-        assert music != null;
-        music.start();
-        music.loop(Clip.LOOP_CONTINUOUSLY);
+        restartMusic();
     }  // End of the 'Constructor'
 
     private Clip initAudio(String path) {
@@ -41,10 +40,18 @@ public class AudioService {
 
     public void resumeMusic() {
         music.start();
+        music.loop(Clip.LOOP_CONTINUOUSLY);
     }  // End of the 'resumeMusic' method
 
+    public void restartMusic() {
+        music = initAudio(MUSIC);
+        assert music != null;
+        music.start();
+        music.loop(Clip.LOOP_CONTINUOUSLY);
+    }  // End of the 'restartMusic' method
+
     public void playSound() {
-        sound = initAudio("assets/audio/collision.wav");
+        sound = initAudio(SOUND);
         if (sound != null) {
             sound.start();
         } else {

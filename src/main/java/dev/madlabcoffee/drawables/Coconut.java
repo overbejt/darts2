@@ -28,13 +28,14 @@ public class Coconut extends Drawable {
     @Override
     public void tick() {
         if (position.y >= (Game.ROWS - 2)) {
-            restart();
+            reset();
         } else {
             position.translate(0, 1);
         }
     }  // End of the 'tick' method
 
-    void restart() {
+    @Override
+    public void reset() {
         double newX = random.nextDouble(16.45);
         position.setLocation(newX, 0);
     }  // End of the 'restart' method

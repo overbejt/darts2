@@ -2,7 +2,6 @@ package dev.madlabcoffee.services;
 
 import dev.madlabcoffee.Game;
 import org.jetbrains.annotations.NotNull;
-
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +11,8 @@ import java.io.IOException;
 public class TextService {
     private final Color BLACK = new Color(0, 0, 0);
     private final Color WHITE = new Color(255, 255, 255);
+    private Rectangle quitBtn;
+    private Rectangle playAgainBtn;
     Font boldFont;
     Font regFont;
     Font largeFont;
@@ -97,6 +98,10 @@ public class TextService {
         g2d.drawString(text, x, y);
     }  // End of the 'drawPaused' method
 
+    /**
+     * Ugly ugly ugly
+     * @param g
+     */
     public void drawGameOver(Graphics g) {
         String text = "GAME OVER";
 
@@ -106,12 +111,58 @@ public class TextService {
         g2d.setColor(BLACK);
         g2d.setFont(largeFont);
         FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
+        int lgWidth = metrics.stringWidth(text);
 
-        int x = ((Game.TILE_SIZE * Game.COLUMNS) / 2) - (metrics.stringWidth(text) / 2);
+        int x = ((Game.TILE_SIZE * Game.COLUMNS) / 2) - (lgWidth / 2);
         int y = (Game.TILE_SIZE * Game.ROWS) / 2;
 
         g2d.drawString(text, x, y);
+
+        int xPad = 115;
+        int rectHeight = 45;
+        int rectY = y + rectHeight;
+        int txtY = y + rectHeight + 35;
+
+        // Play again button
+        String playAgainTxt = "Play Again";
+        g2d.setFont(boldFont);
+        metrics = g2d.getFontMetrics(g2d.getFont());
+        int rectWidth = 20 + metrics.stringWidth(playAgainTxt);
+
+        int offset = 60;
+        int playAgainRectX = ((Game.TILE_SIZE * Game.COLUMNS) / 2) - (rectWidth / 2) - offset;
+        g2d.setColor(BLACK);
+        g2d.fillRect(playAgainRectX, rectY, rectWidth, rectHeight);
+        // Using the Rectangle class makes it easier to detect mouse clicks
+        playAgainBtn = new Rectangle(playAgainRectX, rectY, rectWidth, rectHeight);
+
+        xPad += -105;
+        g2d.setColor(WHITE);
+        g2d.drawString(playAgainTxt, (playAgainRectX + xPad), txtY);
+
+        // Quit button
+        String quitTxt = "Quit";
+        g2d.setFont(boldFont);
+        metrics = g2d.getFontMetrics(g2d.getFont());
+        rectWidth = 20 + metrics.stringWidth(quitTxt);
+
+        int quitRectX = ((Game.TILE_SIZE * Game.COLUMNS) / 2) - (rectWidth / 2) + offset;
+        g2d.setColor(BLACK);
+        g2d.fillRect(quitRectX, rectY, rectWidth, rectHeight);
+        // Using the Rectangle class makes it easier to detect mouse clicks
+        quitBtn = new Rectangle(quitRectX, rectY, rectWidth, rectHeight);
+
+        g2d.setColor(WHITE);
+        g2d.drawString(quitTxt, (quitRectX + xPad), txtY);
     }  // End of the 'drawGameOver' method
+
+    public boolean playAgainBtnClicked(Point p) {
+        return playAgainBtn.contains(p);
+    }  // End of the 'playAgainBtnClicked' method
+
+    public boolean quitBtnClicked(Point p) {
+        return quitBtn.contains(p);
+    }  // End of the 'quiteBtnClicked' method
 
     public void drawCountdown(Graphics g, int count) {
         String text = count + "...";

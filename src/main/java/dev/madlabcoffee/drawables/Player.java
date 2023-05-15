@@ -7,8 +7,8 @@ import java.awt.event.KeyEvent;
 import java.awt.image.ImageObserver;
 
 public class Player extends Drawable {
-    // keep track of the player's score
     private int score;
+    private final int initialLives;  // For resetting player state
     private int lives;
 
     public Player(Point position, String path) {
@@ -16,7 +16,7 @@ public class Player extends Drawable {
 
         score = 0;
         lives = 10;
-//        lives = 1;
+        initialLives = lives;
     }  // End of the 'Constructor'
 
     @Override
@@ -66,6 +66,17 @@ public class Player extends Drawable {
     public void decrementLives() {
         lives--;
     }  // End of the 'decrementLives' method
+
+    public boolean isDead() {
+        return lives < 1;
+    }  // End of the 'isDead' method
+
+    @Override
+    public void reset() {
+        position = initialPosition;
+        lives = initialLives;
+        score = 0;
+    }  // End of the 'reset' method
 }  // End of the 'Player' class
 
 // END OF FILE

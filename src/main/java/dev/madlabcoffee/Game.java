@@ -10,10 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.io.*;
 
 public class Game extends JPanel implements ActionListener, KeyListener {
@@ -52,6 +49,22 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         // this timer will call the actionPerformed() method every DELAY ms
         Timer timer = new Timer(DELAY, this);
         timer.start();
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent event) {
+                if (player.isDead()) {
+                    Point p = event.getPoint();
+                    if (textService.playAgainBtnClicked(p)) {
+                        restart();
+                    }
+                    if (textService.quitBtnClicked(p)) {
+                        System.out.println("I'll be back");
+                        System.exit(0);
+                    }
+                }
+            }
+        });
     }  // End of the 'constructor'
 
     private void initBackground() {
@@ -73,7 +86,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e) {
 
         if (!isInCountdown()) {
-            if (player.getLives() < 1) {
+            if (player.isDead()) {
                 audioService.pauseMusic();
             } else if (!isPlayerHit() && !PAUSED) {
                 // prevent the player from disappearing off the board
@@ -119,9 +132,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
             System.exit(-1);
         }
 
-        textService.drawScore(g, player.getScore());
-        textService.drawLives(g, player.getLives());
-
         player.draw(g, this);
         // Draw after the player so that it renders on top
         coconut.draw(g, this);
@@ -133,9 +143,12 @@ public class Game extends JPanel implements ActionListener, KeyListener {
             textService.drawCountdown(g, (countdownCount / 1000) + 1);
             countdownCount -= DELAY;
         }
-        if (player.getLives() < 1) {
+        if (player.isDead()) {
             textService.drawGameOver(g);
         }
+
+        textService.drawScore(g, player.getScore());
+        textService.drawLives(g, player.getLives());
 
         // this smooths out the animations on some systems
         Toolkit.getDefaultToolkit().sync();
@@ -175,6 +188,12 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     public void keyReleased(KeyEvent e) {
         // noop
     }  // End of the 'keyReleased' method
+
+    private void restart() {
+        player.reset();
+        coconut.reset();
+        audioService.restartMusic();
+    }  // End of the 'restart' method
 
     private boolean isPlayerHit() {
         return false;

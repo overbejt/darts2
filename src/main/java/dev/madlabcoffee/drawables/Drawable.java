@@ -9,10 +9,12 @@ import java.io.IOException;
 
 public abstract class Drawable {
     protected final BufferedImage image;
-    protected final Point position;
+    protected final Point initialPosition;  // For resetting state
+    protected Point position;
 
     Drawable(Point position, String path) {
         this.position = position;
+        this.initialPosition = position;
         this.image = loadImage(path);
     }  // End of the 'Constructor'
 
@@ -56,6 +58,10 @@ public abstract class Drawable {
      * Add in logic for updating the <code>Drawable</code> on each tick.
      */
     public abstract void tick();
+
+    public void reset() {
+        position = initialPosition;
+    }
 }  // End of the 'Drawable' interface
 
 // END OF FILE
